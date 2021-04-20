@@ -1,0 +1,11 @@
+A very simple sprintf-like function.
+
+For using in libraries(by copy-paste) where adding of external
+dependencies(like sprintf.js) isn't welcome. Accepts only:
+ * %, s and d as a conversion specifier
+
+Example
+=======
+
+console.log(_fmt("some %% words %s here %d.", "018", "0019"));
+
