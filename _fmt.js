@@ -38,9 +38,32 @@ _fmt = function (fstr)
 	var args = arguments;
 	var i = 0;
 
-	return fstr.replace(/%([-#0 +]+)?([0-9]+)?(\.[0-9]*)?([%sd])/g, function (m, flags, width, precision, conv) {
-		var ret, v, n, sign = 0;
-         
+	return fstr.replace(/%([-#0 +]+)?([1-9][0-9]*)?(\.[0-9]*)?([%sd])/g, function (m, flags, width, precision, conv) {
+		var ret, v, n, sign = 0, f = {zero: false, rightpad: false, "#": false,
+		  space: false, sign_always: false};
+		var pad = " ", sign = "";
+
+		if (flags != null) {
+			if (flags.indexOf("0") != -1)
+				f.zero = true;
+			if (flags.indexOf("-") != -1) {
+				f.rightpad = true;
+				f.zero = false;
+			}
+			if (flags.indexOf(" ") != -1)
+				f.space = true;
+			if (flags.indexOf("+") != -1) {
+				f.sign_always = true;
+				f.space = false;
+			}
+		}
+		if (f.zero)
+			pad = "0";
+		if (f.space)
+			sign = " ";
+		else if (f.sign_always)
+			sign = "+";
+
 		if (width == null)
 			width = 0;
 
@@ -58,21 +81,33 @@ _fmt = function (fstr)
 			if ((precision != null) && (ret.length > precision))
 				ret = ret.substring(0, precision);
 			if (ret.length < width)
-				ret = " ".repeat(width - ret.length) + ret;
+				if (f.rightpad)
+					ret += pad.repeat(width - ret.length);
+				else
+					ret = pad.repeat(width - ret.length) + ret;
 			break;
 		case 'd':
+			if (precision != null)
+				pad = " ";
+
 			v = Number(args[++i]);
 			if (v < 0) {
-				sign = 1;
+				sign = "-";
 				v = 0 - v;
 			}
 			ret = v.toString().replace(/\..+$/, "");
-			if ((precision != null) && (ret.length < precision))
-				ret = "0".repeat(precision - ret.length) + ret;
-			if (sign)
-				ret = "-" + ret;
+			if (precision != null) {
+				if (ret.length < precision)
+					ret = "0".repeat(precision - ret.length) + ret;
+				ret = sign + ret;
+			}
 			if (ret.length < width)
-				ret = " ".repeat(width - ret.length) + ret;
+				if (f.rightpad)
+					ret += pad.repeat(width - ret.length);
+				else
+					ret = pad.repeat(width - ret.length) + ret;
+			if (precision == null)
+				ret = sign + ret;
 			break;
 		default:
 			throw("_fmt: unknown conversion specifier: " + conv);
