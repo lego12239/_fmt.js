@@ -38,18 +38,41 @@ _fmt = function (fstr)
 	var args = arguments;
 	var i = 0;
 
-	return fstr.replace(/%([%sd])/g, function (m, conv) {
-		var ret;
+	return fstr.replace(/%([-#0 +]+)?([0-9]+)?(\.[0-9]*)?([%sd])/g, function (m, flags, width, precision, conv) {
+		var ret, v, n, sign = 0;
          
+		if (width == null)
+			width = 0;
+
+		if (precision == ".")
+			precision = 0;
+		else if (precision != null)
+			precision = precision.substring(1);
+
 		switch (conv) {
 		case '%':
-			ret = '%';
+			ret = "%";
 			break;
 		case 's':
 			ret = String(args[++i]);
+			if ((precision != null) && (ret.length > precision))
+				ret = ret.substring(0, precision);
+			if (ret.length < width)
+				ret = " ".repeat(width - ret.length) + ret;
 			break;
 		case 'd':
-			ret = Number(args[++i]).toString();
+			v = Number(args[++i]);
+			if (v < 0) {
+				sign = 1;
+				v = 0 - v;
+			}
+			ret = v.toString();
+			if ((precision != null) && (ret.length < precision))
+				ret = "0".repeat(precision - ret.length) + ret;
+			if (sign)
+				ret = "-" + ret;
+			if (ret.length < width)
+				ret = " ".repeat(width - ret.length) + ret;
 			break;
 		default:
 			throw("_fmt: unknown conversion specifier: " + conv);
