@@ -91,6 +91,11 @@ _fmt = function (fstr)
 				pad = " ";
 
 			v = Number(args[++i]);
+			/* A special case. */
+			if ((v == 0) && (precision == 0)) {
+				ret = "";
+				break;
+			}
 			if (v < 0) {
 				sign = "-";
 				v = 0 - v;
