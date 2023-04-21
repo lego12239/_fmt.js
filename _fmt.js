@@ -66,7 +66,7 @@ _fmt = function (fstr)
 				sign = 1;
 				v = 0 - v;
 			}
-			ret = v.toString();
+			ret = v.toString().replace(/\..+$/, "");
 			if ((precision != null) && (ret.length < precision))
 				ret = "0".repeat(precision - ret.length) + ret;
 			if (sign)
