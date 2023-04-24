@@ -105,12 +105,14 @@ _fmt = function (fstr)
 				if (ret.length < precision)
 					ret = "0".repeat(precision - ret.length) + ret;
 				ret = sign + ret;
+				sign = "";
 			}
-			if (ret.length < width)
+			n = width - sign.length;
+			if (ret.length < n)
 				if (f.rightpad)
-					ret += pad.repeat(width - ret.length);
+					ret += pad.repeat(n - ret.length);
 				else
-					ret = pad.repeat(width - ret.length) + ret;
+					ret = pad.repeat(n - ret.length) + ret;
 			if (precision == null)
 				ret = sign + ret;
 			break;
