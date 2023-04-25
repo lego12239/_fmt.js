@@ -70,7 +70,7 @@ _fmt = function (fstr)
 		if (precision == ".")
 			precision = 0;
 		else if (precision != null)
-			precision = precision.substring(1);
+			precision = Number(precision.substring(1));
 
 		switch (conv) {
 		case '%':
