@@ -1,11 +1,70 @@
-A very simple sprintf-like function.
+OVERVIEW
+========
+
+A simple sprintf-like function.
+
+SYNOPSIS
+========
+
+_fmt(FORMAT_STRING, ...)
+
+DESCRIPTION
+===========
+
+_fmt() format a string according to formatting conversions in
+FORMAT_STRING and return a resulted string.
 
 For using in libraries(by copy-paste) where adding of external
-dependencies(like sprintf.js) isn't welcome. Accepts only:
- * %, s and d as a conversion specifier
+dependencies(like sprintf.js) isn't welcome.
 
-Example
-=======
+Conversion format: %[flags][width][.precision]convspec.
+Support:
+ - flags is any combination of "0", "-", " " and "+". Where:
+   "0" - The value should be zero padded.
+         (The default is padding with spaces)
+   "-" - The converted value is to be left adjusted on the field boundary.
+         A - overrides a 0 if both are given.
+         (The default is right justification)
+   " " - A space is always placed before a positive number.
+         (By default a sign is only placed for negative numbers)
+   "+" - A "+" is always placed before a positive number.
+         A "+" overrides a space if both are used.
+         (By default a sign is only placed for negative numbers)
+ - width is an optional decimal digit string (with nonzero first digit)
+   specifying a minimum field width. If the converted value has fewer characters
+   than the field width, it will be padded on the left (or right, if the
+   left-adjustment flag has been given). if the result of a conversion
+   is wider than the field width, the field is expanded to contain the conversion
+   result.
+ - precision is an optional precision, in the form of a period ('.') followed by
+   an optional decimal digit string. If the precision is given as just '.', the
+   precision is taken to be zero. This gives the minimum number of digits to
+   appear for d conversion, the number of digits to appear after the radix
+   character for f conversion or the maximum number of characters to be printed
+   from a string for s conversion.
+ - conversion specifier is a character that specifies the type of conversion to
+   be applied. Where:
+   "%" - A '%' is written. No argument is converted.
+   "d" - The argument is converted to signed decimal notation. The precision,
+         if any, gives the minimum number of digits that must appear; if
+         the converted value requires fewer digits, it is padded on the left
+         with zeros. The default precision is 1. When 0 is printed with an
+         explicit precision 0, the output is empty.
+   "f" - The argument is rounded and converted to decimal notation in the style
+         [-]ddd.ddd, where the number of digits after the decimal point character
+         is equal to the precision specification. If the precision is missing,
+         it is taken as 6; if the precision is explicitly zero, no decimal point
+         character appears.
+   "s" - A string value of an argument is written. If a precision is specified,
+         no more than the number specified are written.
 
-console.log(_fmt("some %% words %s here %d.", "018", "0019"));
+RETURN VALUE
+============
+
+A string which formatted according to format conversions.
+
+EXAMPLES
+========
+
+console.log(_fmt("some %% words %s here %5d %+07.2f.", "018", "0019", 12.126));
 
