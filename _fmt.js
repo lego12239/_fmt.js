@@ -73,17 +73,11 @@ _fmt = function (fstr)
 
 		switch (conv) {
 		case '%':
-			ret = "%";
-			break;
+			return "%";
 		case 's':
 			ret = String(args[++i]);
 			if ((precision != null) && (ret.length > precision))
 				ret = ret.substring(0, precision);
-			if (ret.length < width)
-				if (f.rightpad)
-					ret += pad.repeat(width - ret.length);
-				else
-					ret = pad.repeat(width - ret.length) + ret;
 			break;
 		case 'd':
 			if (precision != null)
@@ -106,18 +100,17 @@ _fmt = function (fstr)
 				ret = sign + ret;
 				sign = "";
 			}
-			n = width - sign.length;
-			if (ret.length < n)
-				if (f.rightpad)
-					ret += pad.repeat(n - ret.length);
-				else
-					ret = pad.repeat(n - ret.length) + ret;
-			if (precision == null)
-				ret = sign + ret;
+			width -= sign.length;
 			break;
 		default:
 			throw("_fmt: unknown conversion specifier: " + conv);
 		}
+		if (ret.length < width)
+			if (f.rightpad)
+				ret += pad.repeat(width - ret.length);
+			else
+				ret = pad.repeat(width - ret.length) + ret;
+		ret = sign + ret;
 		return ret;
 	});
 }
