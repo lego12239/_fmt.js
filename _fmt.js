@@ -31,15 +31,17 @@
  * For using in libraries(by copy-paste) where adding of
  * external dependencies(like sprintf.js) isn't welcome.
  * Accepts only:
- * %, s and d as a conversion specifier
+ * - %, s, d and f as a conversion specifier
+ * - "-", "0", " ", "+" as flags
+ * - width and precision
  */
 _fmt = function (fstr)
 {
 	var args = arguments;
 	var i = 0;
 
-	return fstr.replace(/%([-#0 +]+)?([1-9][0-9]*)?(\.[0-9]*)?([%sd])/g, function (m, flags, width, precision, conv) {
-		var ret, v, n, sign = 0, f = {zero: false, rightpad: false, "#": false,
+	return fstr.replace(/%([-#0 +]+)?([1-9][0-9]*)?(\.[0-9]*)?([%sdf])/g, function (m, flags, width, precision, conv) {
+		var ret, v, n, off, sign = 0, f = {zero: false, rightpad: false, "#": false,
 		  space: false, sign_always: false};
 		var pad = " ", sign = "";
 
@@ -97,6 +99,22 @@ _fmt = function (fstr)
 			if (precision != null) {
 				if (ret.length < precision)
 					ret = "0".repeat(precision - ret.length) + ret;
+				ret = sign + ret;
+				sign = "";
+			}
+			width -= sign.length;
+			break;
+		case 'f':
+			if (precision == null)
+				precision = 6;
+
+			v = parseFloat(args[++i]);
+			if (v < 0) {
+				sign = "-";
+				v = 0 - v;
+			}
+			ret = v.toFixed(precision);
+			if (pad != "0") {
 				ret = sign + ret;
 				sign = "";
 			}
