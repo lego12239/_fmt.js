@@ -83,7 +83,7 @@ _fmt = function (fstr)
 			if (precision != null)
 				pad = " ";
 
-			v = Number(args[++i]);
+			v = parseInt(args[++i]);
 			/* A special case. */
 			if ((v == 0) && (precision == 0)) {
 				ret = "";
@@ -93,7 +93,7 @@ _fmt = function (fstr)
 				sign = "-";
 				v = 0 - v;
 			}
-			ret = v.toString().replace(/\..+$/, "");
+			ret = v.toString();
 			if (precision != null) {
 				if (ret.length < precision)
 					ret = "0".repeat(precision - ret.length) + ret;
