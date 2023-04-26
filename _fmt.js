@@ -64,8 +64,7 @@ _fmt = function (fstr)
 		else if (f.sign_always)
 			sign = "+";
 
-		if (width == null)
-			width = 0;
+		width = Number(width);
 
 		if (precision == ".")
 			precision = 0;
